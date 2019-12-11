@@ -1,22 +1,34 @@
-# Rapport AIT - Lab04 - Docker
+---
+title: "Rapport AIT - Lab04 - Docker"
+author: [Nathan Séville, Julien Quartier]
+titlepage: true
+titlepage-color: "FFFFFF"
+toc-own-page: true
+toc-title: "Table des matières"
+---
 
-## Table of content
+
+
+# Introduction
 
 
 
-## Introduction
+# Tasks
 
-
-
-## Tasks
-
-### Task 0: Identify issues and install the tools
+## Task 0: Identify issues and install the tools
 
 > **[M1]** Do you think we can use the current solution for a production environment? What are the main problems when deploying it in a production environment?
 
 Non, cette solution n'est pas adaptée à un environnement de production. En cas d'arrêt inopiné de *node*, aucun monitoring, ni procédure automatique n'est configurée. En cas de grande charge, aucune stratégie de *scaling* n'est définie. L'ajout de nouveau *container* est compliquée dans l'infrastructure courante (CF. **M2**).
 
+
+
 > **[M2]** Describe what you need to do to add new `webapp` container to the infrastructure. Give the exact steps of what you have to do without modifiying the way the things are done. Hint: You probably have to modify some configuration and script files in a Docker image.
+
+///// To complete
+
+1. Ajouter une *webapp* dans le fichier `docker-compose.yml`.
+2. Ajouter une *node* dans le fichier de configuration de *haproxy*, `haproxy.cfg`.
 
 
 
@@ -42,15 +54,25 @@ Non, cette solution n'est pas adaptée à un environnement de production. En cas
 
 
 
-![HAProxy Stat](img/T0_haproxystat.png)
+**Deliverables**
 
-### Task 1: Add a process supervisor to run several processes
-
-
-
-## Difficulties
+1. ![HAProxy Stat](img/T0_haproxystat.png)
+2. https://github.com/nathanseville/Teaching-HEIGVD-AIT-2019-Labo-Docker
 
 
 
-## Conclusion
+## Task 1: Add a process supervisor to run several processes
+
+**Deliverables**
+
+1. ![HAProxy Stat](img/T1_haproxystat.png)
+2. // TODO
+
+
+
+# Difficulties
+
+
+
+# Conclusion
 
