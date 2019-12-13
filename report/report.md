@@ -99,6 +99,17 @@ Non, cette solution n'est pas adaptée à un environnement de production. En cas
 
 ## Task 5: Generate a new load balancer configuration when membership changes
 
+1. 1
+2. 2
+3. 3
+4. Optional
+
+///// TO COMPLETE
+
+
+
+## Task 6: Make the load balancer automatically reload the new configuration
+
 
 
 
