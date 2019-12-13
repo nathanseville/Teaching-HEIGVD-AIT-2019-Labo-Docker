@@ -110,7 +110,8 @@ Non, cette solution n'est pas adaptée à un environnement de production. En cas
 
 ## Task 6: Make the load balancer automatically reload the new configuration
 
-
+1. Tout dans le dossier `logs` à la racine du git.
+2. 
 
 
 
