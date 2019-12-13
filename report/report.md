@@ -65,8 +65,14 @@ Non, cette solution n'est pas adaptée à un environnement de production. En cas
 
 **Deliverables**
 
-1. ![HAProxy Stat](img/T1_haproxystat.png)
-2. // TODO
+1. ![HAProxy Stat Backend](img/T1_haproxystat.png)
+2. L'installation d'un *process supervisor* tel que `S6` va nous permettre de lancer plusieurs processus par *container* `docker`, c'est important qu'on puisse le faire afin de pouvoir ajouter par exemple un processus qui communique sur l'état de la *node* pour pouvoir les manager correctement en fonction de leur état.
+
+// TO COMPLETE
+
+
+
+## Task 2: Add a tool to manage membership in the web server cluster
 
 
 
