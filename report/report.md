@@ -82,6 +82,25 @@ Non, cette solution n'est pas adaptée à un environnement de production. En cas
 
 ## Task 3: React to membership changes
 
+1. 2. Tout est dans le dossier `logs` à la racine du git.
+
+
+
+## Task 4: Use a template engine to easily generate configuration files
+
+1. 1
+2. 2
+3. 3
+4. 4
+
+/// TO COMPLETE
+
+
+
+## Task 5: Generate a new load balancer configuration when membership changes
+
+
+
 
 
 # Difficulties
