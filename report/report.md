@@ -74,6 +74,14 @@ Non, cette solution n'est pas adaptée à un environnement de production. En cas
 
 ## Task 2: Add a tool to manage membership in the web server cluster
 
+1. Les logs sont dans le dossier `logs` à la racine du git.
+2. Le problème c'est que notre `Serf` sur le HAProxy ne prend pas en charge la gestion des membres de `Serf`.
+3. /// TO COMPLETE
+
+
+
+## Task 3: React to membership changes
+
 
 
 # Difficulties
