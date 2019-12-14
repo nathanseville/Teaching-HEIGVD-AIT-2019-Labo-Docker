@@ -100,7 +100,7 @@ Non, ce n'est pas dynamique, si l'on ajoute de nouvelle *nodes* il est tout de m
 
 1. /// TO COMPLETE
 2. Une meilleure approche est de chainer les images, une image de base avec `S6` et les instructions commune puis chaque nouvelle image différente demandant quelques instructions supplémentaires basée sur celle possédant les instructions commune à l'aide de la commande `FROM <image>`, ceci permet de limiter la taille des containers et images comme chaque nouvelle image partagera les *layers* de base avec les autre.
-3. Dans le dossier `logs` à la racine du git.
+3. Dans le dossier `logs` à la racine du git. On a oublié de faire les `docker ps` et `docker inspect` la première fois, il ne sont donc pas à la même date et n'on pas les même identifiant que dans les autres fichiers.
 4. //// TO COMPLETE
 
 
