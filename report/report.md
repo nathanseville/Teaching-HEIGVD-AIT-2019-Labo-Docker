@@ -34,11 +34,13 @@ Non, cette solution n'est pas adaptée à un environnement de production. En cas
 
 > **[M3]** Based on your previous answers, you have detected some issues in the current solution. Now propose a better approach at a high level.
 
+Une meilleure solution serai de surveiller les *container* de type `webapp` et de les ajouter / retirer de manière dynamique du *load balancer*.
+
 
 
 > **[M4]** You probably noticed that the list of web application nodes is hardcoded in the load balancer configuration. How can we manage the web app nodes in a more dynamic fashion?
 
-
+Il est possible de gérer dynamiquement les *web app nodes* de manière plus dynamique en générant le fichier de configuration du *load balancer* au démarrage, ainsi que lorsqu'une application disparaît ou disparaît dans le *pool* d'applications. Le *pool* d'applications pourrait être géré de différente manière en surveillant l'activité des *containers* qui peuvent par exemple s'enregistrer ou sortir du *pool*.
 
 > **[M5]** In the physical or virtual machines of a typical infrastructure we tend to have not only one main process (like the web server or the load balancer) running, but a few additional processes on the side to perform management tasks.
 >
@@ -46,11 +48,15 @@ Non, cette solution n'est pas adaptée à un environnement de production. En cas
 >
 > Do you think our current solution is able to run additional management processes beside the main web server / load balancer process in a container? If no, what is missing / required to reach the goal? If yes, how to proceed to run for example a log forwarding process?
 
+Pour pouvoir lancer plusieurs processus sur une même *container* `docker`, il est possible de procéder de différentes manière[^1], un approche privilégie l'utilisation de script à lancer lors du lancement du *container* avec la commande `CMD` de `docker` dans le *Dockerfile*. Une autre approche possible est de lancer un *process manager* comme processus principal de notre *container* et c'est lui qui s'occupera de lancer nos autre processus, par exemple la docummantation `docker` propose l'utilisation de `supervisord`.
 
+[^1]: https://docs.docker.com/config/containers/multi-service_container/
 
 > **[M6]** In our current solution, although the load balancer configuration is changing dynamically, it doesn't follow dynamically the configuration of our distributed system when web servers are added or removed. If we take a closer look at the `run.sh` script, we see two calls to `sed` which will replace two lines in the `haproxy.cfg` configuration file just before we start `haproxy`. You clearly see that the configuration file has two lines and the script will replace these two lines.
 >
 > What happens if we add more web server nodes? Do you think it is really dynamic? It's far away from being a dynamic configuration. Can you propose a solution to solve this?
+
+Non, ce n'est pas dynamique, si l'on ajoute de nouvelle *nodes* il est tout de même nécessaire de modifier le script ainsi que de redémarrer le *container* du *load balancer*. Une meilleure solution est d'implémenter un mécanisme de surveillance des *container* "up" et de régénérer dynamiquement la configuration du *load balancer* sans avoir à le redémarer.
 
 
 
@@ -75,43 +81,40 @@ Non, cette solution n'est pas adaptée à un environnement de production. En cas
 ## Task 2: Add a tool to manage membership in the web server cluster
 
 1. Les logs sont dans le dossier `logs` à la racine du git.
-2. Le problème c'est que notre `Serf` sur le HAProxy ne prend pas en charge la gestion des membres de `Serf`.
-3. /// TO COMPLETE
+
+2. Le problème c'est que notre `Serf` sur le HAProxy ne prend pas en charge la gestion des membres des autres *containers*.
+
+3. Le `GOSSIP` protocole est principalement basé sur le protocole `SWIM`, il permet de propager l'information rapidement en broadcastant à tout ses voisins son état actuel.Le protocole se base essentiellement sur `UDP` pour accomplir sa tâche. La détection de *node* "down" se fait en trois étapes, les nodes effectuent des vérifications régulièrement pour savoir si leur voisin sont toujours "up" à l'aide de simple requête avec demande d'un `ACK`. (1) Si la *node* ne répond pas on demande à nos voisin d'effectuer la même requête, (2) si la *node* ne répond pas elle est marquée comme suspicieuse et l'information est *broadcatsée* au autre *node*, (3) si la node ne répond toujours pas après un intervalle de temps configurable elle est considérée comme "down" et son état est *broadcasté*.
+
+   Une alternative serait de privilégier une méthode de type *pull*, un *manager* principal serait seul responsable de vérifier qu'il n'y ait pas de nouvelle *node* où des *nodes* en moins en effectuant un scan du réseau pour la détection de nouvelle *node* et en gardant l'état du *pool* de *node* afin de les interroger régulièrement pour vérifier qu'elles soient toujours "up".
 
 
 
 ## Task 3: React to membership changes
 
-1. 2. Tout est dans le dossier `logs` à la racine du git.
+1 et 2.	Tout est dans le dossier `logs` à la racine du git.
 
 
 
 ## Task 4: Use a template engine to easily generate configuration files
 
-1. 1
-2. 2
-3. 3
-4. 4
-
-/// TO COMPLETE
+1. /// TO COMPLETE
+2. Une meilleure approche est de chainer les images, une image de base avec `S6` et les instructions commune puis chaque nouvelle image différente demandant quelques instructions supplémentaires basée sur celle possédant les instructions commune à l'aide de la commande `FROM <image>`, ceci permet de limiter la taille des containers et images comme chaque nouvelle image partagera les *layers* de base avec les autre.
+3. Dans le dossier `logs` à la racine du git.
+4. //// TO COMPLETE
 
 
 
 ## Task 5: Generate a new load balancer configuration when membership changes
 
-1. 1
-2. 2
-3. 3
-4. Optional
-
-///// TO COMPLETE
+1, 2 et 3.	Dans le dossier `logs` à la racine du git.
 
 
 
 ## Task 6: Make the load balancer automatically reload the new configuration
 
 1. Tout dans le dossier `logs` à la racine du git.
-2. 
+2. ///// TO COMPLETE
 
 
 
