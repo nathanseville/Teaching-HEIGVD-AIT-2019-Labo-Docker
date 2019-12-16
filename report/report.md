@@ -25,7 +25,7 @@ Non, cette solution n'est pas adaptée à un environnement de production. En cas
 
 > **[M2]** Describe what you need to do to add new `webapp` container to the infrastructure. Give the exact steps of what you have to do without modifiying the way the things are done. Hint: You probably have to modify some configuration and script files in a Docker image.
 
-///// To complete
+///// To complete not sure of the answer
 
 1. Ajouter une *webapp* dans le fichier `docker-compose.yml`.
 2. Ajouter une *node* dans le fichier de configuration de *haproxy*, `haproxy.cfg`.
@@ -42,6 +42,8 @@ Une meilleure solution serai de surveiller les *container* de type `webapp` et d
 
 Il est possible de gérer dynamiquement les *web app nodes* de manière plus dynamique en générant le fichier de configuration du *load balancer* au démarrage, ainsi que lorsqu'une application disparaît ou disparaît dans le *pool* d'applications. Le *pool* d'applications pourrait être géré de différente manière en surveillant l'activité des *containers* qui peuvent par exemple s'enregistrer ou sortir du *pool*.
 
+
+
 > **[M5]** In the physical or virtual machines of a typical infrastructure we tend to have not only one main process (like the web server or the load balancer) running, but a few additional processes on the side to perform management tasks.
 >
 > For example to monitor the distributed system as a whole it is common to collect in one centralized place all the logs produced by the different machines. Therefore we need a process running on each machine that will forward the logs to the central place. (We could also imagine a central tool that reaches out to each machine to gather the logs. That's a push vs. pull problem.) It is quite common to see a push mechanism used for this kind of task.
@@ -51,6 +53,8 @@ Il est possible de gérer dynamiquement les *web app nodes* de manière plus dyn
 Pour pouvoir lancer plusieurs processus sur une même *container* `docker`, il est possible de procéder de différentes manière[^1], un approche privilégie l'utilisation de script à lancer lors du lancement du *container* avec la commande `CMD` de `docker` dans le *Dockerfile*. Une autre approche possible est de lancer un *process manager* comme processus principal de notre *container* et c'est lui qui s'occupera de lancer nos autre processus, par exemple la docummantation `docker` propose l'utilisation de `supervisord`.
 
 [^1]: https://docs.docker.com/config/containers/multi-service_container/
+
+
 
 > **[M6]** In our current solution, although the load balancer configuration is changing dynamically, it doesn't follow dynamically the configuration of our distributed system when web servers are added or removed. If we take a closer look at the `run.sh` script, we see two calls to `sed` which will replace two lines in the `haproxy.cfg` configuration file just before we start `haproxy`. You clearly see that the configuration file has two lines and the script will replace these two lines.
 >
@@ -80,6 +84,8 @@ https://github.com/nathanseville/Teaching-HEIGVD-AIT-2019-Labo-Docker
 
 ![HAProxy Stat Backend](img/T1_haproxystat.png)
 
+
+
 > 2. Describe your difficulties for this task and your understanding of what is happening during this task. Explain in your own words why are we installing a process supervisor. Do not hesitate to do more research and to find more articles on that topic to illustrate the problem.
 
 L'installation d'un *process supervisor* tel que `S6` va nous permettre de lancer plusieurs processus par *container* `docker`, c'est important qu'on puisse le faire afin de pouvoir ajouter par exemple un processus qui communique sur l'état de la *node* pour pouvoir les manager correctement en fonction de leur état.
@@ -96,9 +102,13 @@ L'installation d'un *process supervisor* tel que `S6` va nous permettre de lance
 
 Les logs sont dans le dossier `logs` à la racine du git.
 
+
+
 > 2. Give the answer to the question about the existing problem with the current solution.
 
 Le problème c'est que notre `Serf` sur le HAProxy ne prend pas en charge la gestion des membres des autres *containers*.
+
+
 
 > 3. Give an explanation on how `Serf` is working. Read the official website to get more details about the `GOSSIP` protocol used in `Serf`. Try to find other solutions that can be used to solve similar situations where we need some auto-discovery mechanism.
 
@@ -114,6 +124,8 @@ Une alternative serait de privilégier une méthode de type *pull*, un *manager*
 
 Tout est dans le dossier `logs` à la racine du git.
 
+
+
 > 2. Provide the logs from the `ha` container gathered directly from the `/var/log/serf.log` file present in the container. Put the logs in the `logs` directory in your repo.
 
 Tout est dans le dossier `logs` à la racine du git.
@@ -126,15 +138,21 @@ Tout est dans le dossier `logs` à la racine du git.
 
 /// TO COMPLETE
 
+
+
 > 2. Propose a different approach to architecture our images to be able to reuse as much as possible what we have done. Your proposition should also try to avoid as much as possible repetitions between your images.
 
 Une meilleure approche est de chainer les images, une image de base avec `S6` et les instructions commune puis chaque nouvelle image différente demandant quelques instructions supplémentaires basée sur celle possédant les instructions commune à l'aide de la commande `FROM <image>`, ceci permet de limiter la taille des containers et images comme chaque nouvelle image partagera les *layers* de base avec les autre.
+
+
 
 > 3. Provide the `/tmp/haproxy.cfg` file generated in the `ha` container after each step. Place the output into the `logs` folder like you already did for the Docker logs in the previous tasks. Three files are expected.
 >
 > In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect `. Four files are expected.
 
 Dans le dossier `logs` à la racine du git.
+
+
 
 > 4. Based on the three output files you have collected, what can you say about the way we generate it? What is the problem if any?
 
@@ -150,15 +168,21 @@ Dans le dossier `logs` à la racine du git.
 
 Dans le dossier `logs` à la racine du git.
 
+
+
 > 2. Provide the list of files from the `/nodes` folder inside the `ha` container. One file expected with the command output.
 
 Dans le dossier `logs` à la racine du git.
+
+
 
 > 3. Provide the configuration file after you stopped one container and the list of nodes present in the `/nodes` folder. One file expected with the command output. Two files are expected.
 >
 > In addition, provide a log file containing the output of the `docker ps` console. One file expected.
 
 Dans le dossier `logs` à la racine du git.
+
+
 
 > 4. (Optional:) Propose a different approach to manage the list of backend nodes. You do not need to implement it. You can also propose your own tools or the ones you discovered online. In that case, do not forget to cite your references.
 
@@ -172,9 +196,13 @@ Dans le dossier `logs` à la racine du git.
 
 Tout dans le dossier `logs` à la racine du git.
 
+
+
 > 2. Give your own feelings about the final solution. Propose improvements or ways to do the things differently. If any, provide references to your readings for the improvements.
 
 Tout dans le dossier `logs` à la racine du git.
+
+
 
 > 3. (Optional:) Present a live demo where you add and remove a backend container.
 
