@@ -62,8 +62,13 @@ Non, ce n'est pas dynamique, si l'on ajoute de nouvelle *nodes* il est tout de m
 
 **Deliverables**
 
-1. ![HAProxy Stat](img/T0_haproxystat.png)
-2. https://github.com/nathanseville/Teaching-HEIGVD-AIT-2019-Labo-Docker
+> 1. Take a screenshot of the stats page of HAProxy at [http://192.168.42.42:1936](http://192.168.42.42:1936/). You should see your backend nodes.
+
+![HAProxy Stat](img/T0_haproxystat.png)
+
+> 2. Give the URL of your repository URL in the lab report.
+
+https://github.com/nathanseville/Teaching-HEIGVD-AIT-2019-Labo-Docker
 
 
 
@@ -71,8 +76,15 @@ Non, ce n'est pas dynamique, si l'on ajoute de nouvelle *nodes* il est tout de m
 
 **Deliverables**
 
-1. ![HAProxy Stat Backend](img/T1_haproxystat.png)
-2. L'installation d'un *process supervisor* tel que `S6` va nous permettre de lancer plusieurs processus par *container* `docker`, c'est important qu'on puisse le faire afin de pouvoir ajouter par exemple un processus qui communique sur l'état de la *node* pour pouvoir les manager correctement en fonction de leur état.
+> 1. Take a screenshot of the stats page of HAProxy at [http://192.168.42.42:1936](http://192.168.42.42:1936/). You should see your backend nodes. It should be really similar to the screenshot of the previous task.
+
+![HAProxy Stat Backend](img/T1_haproxystat.png)
+
+> 2. Describe your difficulties for this task and your understanding of what is happening during this task. Explain in your own words why are we installing a process supervisor. Do not hesitate to do more research and to find more articles on that topic to illustrate the problem.
+
+L'installation d'un *process supervisor* tel que `S6` va nous permettre de lancer plusieurs processus par *container* `docker`, c'est important qu'on puisse le faire afin de pouvoir ajouter par exemple un processus qui communique sur l'état de la *node* pour pouvoir les manager correctement en fonction de leur état.
+
+
 
 // TO COMPLETE
 
@@ -80,41 +92,93 @@ Non, ce n'est pas dynamique, si l'on ajoute de nouvelle *nodes* il est tout de m
 
 ## Task 2: Add a tool to manage membership in the web server cluster
 
-1. Les logs sont dans le dossier `logs` à la racine du git.
+> 1. Provide the docker log output for each of the containers: `ha`, `s1` and `s2`. You need to create a folder `logs` in your repository to store the files separately from the lab report. For each lab task create a folder and name it using the task number. No need to create a folder when there are no logs.
 
-2. Le problème c'est que notre `Serf` sur le HAProxy ne prend pas en charge la gestion des membres des autres *containers*.
+Les logs sont dans le dossier `logs` à la racine du git.
 
-3. Le `GOSSIP` protocole est principalement basé sur le protocole `SWIM`, il permet de propager l'information rapidement en broadcastant à tout ses voisins son état actuel.Le protocole se base essentiellement sur `UDP` pour accomplir sa tâche. La détection de *node* "down" se fait en trois étapes, les nodes effectuent des vérifications régulièrement pour savoir si leur voisin sont toujours "up" à l'aide de simple requête avec demande d'un `ACK`. (1) Si la *node* ne répond pas on demande à nos voisin d'effectuer la même requête, (2) si la *node* ne répond pas elle est marquée comme suspicieuse et l'information est *broadcatsée* au autre *node*, (3) si la node ne répond toujours pas après un intervalle de temps configurable elle est considérée comme "down" et son état est *broadcasté*.
+> 2. Give the answer to the question about the existing problem with the current solution.
 
-   Une alternative serait de privilégier une méthode de type *pull*, un *manager* principal serait seul responsable de vérifier qu'il n'y ait pas de nouvelle *node* où des *nodes* en moins en effectuant un scan du réseau pour la détection de nouvelle *node* et en gardant l'état du *pool* de *node* afin de les interroger régulièrement pour vérifier qu'elles soient toujours "up".
+Le problème c'est que notre `Serf` sur le HAProxy ne prend pas en charge la gestion des membres des autres *containers*.
+
+> 3. Give an explanation on how `Serf` is working. Read the official website to get more details about the `GOSSIP` protocol used in `Serf`. Try to find other solutions that can be used to solve similar situations where we need some auto-discovery mechanism.
+
+Le `GOSSIP` protocole est principalement basé sur le protocole `SWIM`, il permet de propager l'information rapidement en broadcastant à tout ses voisins son état actuel.Le protocole se base essentiellement sur `UDP` pour accomplir sa tâche. La détection de *node* "down" se fait en trois étapes, les nodes effectuent des vérifications régulièrement pour savoir si leur voisin sont toujours "up" à l'aide de simple requête avec demande d'un `ACK`. (1) Si la *node* ne répond pas on demande à nos voisin d'effectuer la même requête, (2) si la *node* ne répond pas elle est marquée comme suspicieuse et l'information est *broadcatsée* au autre *node*, (3) si la node ne répond toujours pas après un intervalle de temps configurable elle est considérée comme "down" et son état est *broadcasté*.
+
+Une alternative serait de privilégier une méthode de type *pull*, un *manager* principal serait seul responsable de vérifier qu'il n'y ait pas de nouvelle *node* où des *nodes* en moins en effectuant un scan du réseau pour la détection de nouvelle *node* et en gardant l'état du *pool* de *node* afin de les interroger régulièrement pour vérifier qu'elles soient toujours "up".
 
 
 
 ## Task 3: React to membership changes
 
-1 et 2.	Tout est dans le dossier `logs` à la racine du git.
+> 1. Provide the docker log output for each of the containers: `ha`, `s1` and `s2`. Put your logs in the `logs` directory you created in the previous task.
+
+Tout est dans le dossier `logs` à la racine du git.
+
+> 2. Provide the logs from the `ha` container gathered directly from the `/var/log/serf.log` file present in the container. Put the logs in the `logs` directory in your repo.
+
+Tout est dans le dossier `logs` à la racine du git.
 
 
 
 ## Task 4: Use a template engine to easily generate configuration files
 
-1. /// TO COMPLETE
-2. Une meilleure approche est de chainer les images, une image de base avec `S6` et les instructions commune puis chaque nouvelle image différente demandant quelques instructions supplémentaires basée sur celle possédant les instructions commune à l'aide de la commande `FROM <image>`, ceci permet de limiter la taille des containers et images comme chaque nouvelle image partagera les *layers* de base avec les autre.
-3. Dans le dossier `logs` à la racine du git.
-4. //// TO COMPLETE
+> 1. You probably noticed when we added `xz-utils`, we have to rebuild the whole image which took some time. What can we do to mitigate that? Take a look at the Docker documentation on [image layers](https://docs.docker.com/engine/userguide/storagedriver/imagesandcontainers/#images-and-layers). Tell us about the pros and cons to merge as much as possible of the command.
+
+/// TO COMPLETE
+
+> 2. Propose a different approach to architecture our images to be able to reuse as much as possible what we have done. Your proposition should also try to avoid as much as possible repetitions between your images.
+
+Une meilleure approche est de chainer les images, une image de base avec `S6` et les instructions commune puis chaque nouvelle image différente demandant quelques instructions supplémentaires basée sur celle possédant les instructions commune à l'aide de la commande `FROM <image>`, ceci permet de limiter la taille des containers et images comme chaque nouvelle image partagera les *layers* de base avec les autre.
+
+> 3. Provide the `/tmp/haproxy.cfg` file generated in the `ha` container after each step. Place the output into the `logs` folder like you already did for the Docker logs in the previous tasks. Three files are expected.
+>
+> In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect `. Four files are expected.
+
+Dans le dossier `logs` à la racine du git.
+
+> 4. Based on the three output files you have collected, what can you say about the way we generate it? What is the problem if any?
+
+//// TO COMPLETE
 
 
 
 ## Task 5: Generate a new load balancer configuration when membership changes
 
-1, 2 et 3.	Dans le dossier `logs` à la racine du git.
+> 1. Provide the file `/usr/local/etc/haproxy/haproxy.cfg` generated in the `ha` container after each step. Three files are expected.
+>
+>    In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect `. Four files are expected.
 
+Dans le dossier `logs` à la racine du git.
 
+> 2. Provide the list of files from the `/nodes` folder inside the `ha` container. One file expected with the command output.
+
+Dans le dossier `logs` à la racine du git.
+
+> 3. Provide the configuration file after you stopped one container and the list of nodes present in the `/nodes` folder. One file expected with the command output. Two files are expected.
+>
+> In addition, provide a log file containing the output of the `docker ps` console. One file expected.
+
+Dans le dossier `logs` à la racine du git.
+
+> 4. (Optional:) Propose a different approach to manage the list of backend nodes. You do not need to implement it. You can also propose your own tools or the ones you discovered online. In that case, do not forget to cite your references.
+
+//// TO COMPLETE
 
 ## Task 6: Make the load balancer automatically reload the new configuration
 
-1. Tout dans le dossier `logs` à la racine du git.
-2. ///// TO COMPLETE
+> 1. Take a screenshots of the HAProxy stat page showing more than 2 web applications running. Additional screenshots are welcome to see a sequence of experimentations like shutting down a node and starting more nodes.
+>
+>    Also provide the output of `docker ps` in a log file. At least one file is expected. You can provide one output per step of your experimentation according to your screenshots.
+
+Tout dans le dossier `logs` à la racine du git.
+
+> 2. Give your own feelings about the final solution. Propose improvements or ways to do the things differently. If any, provide references to your readings for the improvements.
+
+Tout dans le dossier `logs` à la racine du git.
+
+> 3. (Optional:) Present a live demo where you add and remove a backend container.
+
+///// TO COMPLETE
 
 
 
