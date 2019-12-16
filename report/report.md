@@ -25,10 +25,90 @@ Non, cette solution n'est pas adaptée à un environnement de production. En cas
 
 > **[M2]** Describe what you need to do to add new `webapp` container to the infrastructure. Give the exact steps of what you have to do without modifiying the way the things are done. Hint: You probably have to modify some configuration and script files in a Docker image.
 
-///// To complete not sure of the answer
+1. Ajouter les variables d'environnements correspondant à notre nouvelle *node* dans le fichier `.env` à la racine. Les variables d'environnements à ajouter sont les suivantes :
 
-1. Ajouter une *webapp* dans le fichier `docker-compose.yml`.
-2. Ajouter une *node* dans le fichier de configuration de *haproxy*, `haproxy.cfg`.
+```
+WEBAPP_3_NAME=s3
+WEBAPP_3_IP=192.168.42.33
+```
+
+2. Modifier la configuration comme suit de *haproxy* dans le fichier `docker-compose.yml`.
+
+```
+  haproxy:
+       container_name: ha
+       build:
+         context: ./ha
+         dockerfile: Dockerfile
+       ports:
+         - 8080:80
+         - 1936:1936
+         - 9999:9999
+       expose:
+         - 80
+         - 1936
+         - 9999
+       networks:
+         heig:
+           ipv4_address: ${HA_PROXY_IP}
+       environment:
+            - WEBAPP_1_IP=${WEBAPP_1_IP}
+            - WEBAPP_2_IP=${WEBAPP_2_IP}
+            - WEBAPP_3_IP=${WEBAPP_3_IP}
+```
+
+3. Ajouter une *webapp* dans le fichier `docker-compose.yml`.
+
+```
+  webapp3:
+       container_name: ${WEBAPP_3_NAME}
+       build:
+         context: ./webapp
+         dockerfile: Dockerfile
+       networks:
+         heig:
+           ipv4_address: ${WEBAPP_3_IP}
+       ports:
+         - "4001:3000"
+       environment:
+            - TAG=${WEBAPP_3_NAME}
+            - SERVER_IP=${WEBAPP_3_IP}
+```
+
+4. Ajouter une *node* dans le fichier de configuration de *haproxy*, `haproxy.cfg`, dans la section *backend nodes*.
+
+```
+# Define the backend configuration. In fact, that's the part that configure what is not directly
+# accessible from the outside of the network.
+# http://cbonte.github.io/haproxy-dconv/configuration-1.5.html#4
+backend nodes
+    # Define the protocol accepted
+    # http://cbonte.github.io/haproxy-dconv/configuration-1.5.html#4-mode
+    mode http
+
+    # Define the way the backend nodes are checked to know if they are alive or down
+    # http://cbonte.github.io/haproxy-dconv/configuration-1.5.html#4-option%20httpchk
+    option httpchk HEAD /
+
+    # Define the balancing policy
+    # http://cbonte.github.io/haproxy-dconv/configuration-1.5.html#balance
+    balance roundrobin
+
+    # Automatically add the X-Forwarded-For header
+    # http://cbonte.github.io/haproxy-dconv/configuration-1.5.html#4-option%20forwardfor
+    # https://en.wikipedia.org/wiki/X-Forwarded-For
+    option forwardfor
+
+    # With this config, we add the header X-Forwarded-Port
+    # http://cbonte.github.io/haproxy-dconv/configuration-1.5.html#4-http-request
+    http-request set-header X-Forwarded-Port %[dst_port]
+
+    # Define the list of nodes to be in the balancing mechanism
+    # http://cbonte.github.io/haproxy-dconv/configuration-1.5.html#4-server
+    server s1 ${WEBAPP_1_IP}:3000 check
+    server s2 ${WEBAPP_2_IP}:3000 check
+    server s3 ${WEBAPP_3_IP}:3000 check
+```
 
 
 
@@ -90,9 +170,7 @@ https://github.com/nathanseville/Teaching-HEIGVD-AIT-2019-Labo-Docker
 
 L'installation d'un *process supervisor* tel que `S6` va nous permettre de lancer plusieurs processus par *container* `docker`, c'est important qu'on puisse le faire afin de pouvoir ajouter par exemple un processus qui communique sur l'état de la *node* pour pouvoir les manager correctement en fonction de leur état.
 
-
-
-// TO COMPLETE
+Notre *process supervisor* nous permet d'éviter que notre *container* `docker` s'arrête si l'application web tombe.
 
 
 
