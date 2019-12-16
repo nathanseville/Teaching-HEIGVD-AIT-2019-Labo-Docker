@@ -136,7 +136,22 @@ Tout est dans le dossier `logs` à la racine du git.
 
 > 1. You probably noticed when we added `xz-utils`, we have to rebuild the whole image which took some time. What can we do to mitigate that? Take a look at the Docker documentation on [image layers](https://docs.docker.com/engine/userguide/storagedriver/imagesandcontainers/#images-and-layers). Tell us about the pros and cons to merge as much as possible of the command.
 
-/// TO COMPLETE
+Chaque commande (ligne) dans le docker file est considéré comme un "layer". Si le "layer" est modifié, ce "layer" ainsi que tous les suivants sont "rebuild". Si plusieurs commandes sont sur la même ligne, elle sera entièrement re-exécutée même s'il n'y a qu'un paquet qui est ajouté. Une solution est donc de placer une commande par ligne en ajoutant la nouvelle ligne à la fin. Cela permet de conserver les layers précédents. Il faut cependant faire attention à la commande `update` qui devrait être re-exécutées afin d'obtenir des paquets à jour.
+
+```dockerfile
+# Tout est réinstallé
+RUN apt-get update && apt-get -y install wget curl vim iputils-ping rsyslog xz-utils
+```
+
+```dockerfile
+# Ici la ligne n'est pas pas reexecutée
+RUN apt-get update && apt-get -y install wget curl vim iputils-ping rsyslog
+
+# Seule ce layer et les suivants sont construits, le update est important car on ne sais pas quand la ligne précédente à été executée.
+RUN apt-get update && apt-get -y install xz-utils
+```
+
+
 
 
 
