@@ -11,6 +11,8 @@ toc-title: "Table des matières"
 
 # Introduction
 
+Dans ce laboratoire nous allons voir comment configurer et analyser le fonctionnement d'un répartiteur de charge dynamique acceptant de nouvelle *node* sans devoir changer la configuration. Nous en apprendrons d'avantage sur le fonctionnement de `Docker` ainsi que le répartiteur de charge `haproxy` et l'utilisation possible de `Serf` ainsi que son fonctionnement sous-jacent utilisant le protocole de communication *gossip*.
+
 
 
 # Tasks
@@ -249,7 +251,7 @@ Dans le dossier `logs` à la racine du git.
 
 > 4. Based on the three output files you have collected, what can you say about the way we generate it? What is the problem if any?
 
-//// TO COMPLETE
+On écrase les anciennes données, il serait préférable d'ajouter à la fin des fichiers les données pour éviter de perdre les précédentes et ainsi garder un historique. 
 
 
 
@@ -277,10 +279,6 @@ Dans le dossier `logs` à la racine du git.
 
 
 
-> 4. (Optional:) Propose a different approach to manage the list of backend nodes. You do not need to implement it. You can also propose your own tools or the ones you discovered online. In that case, do not forget to cite your references.
-
-//// TO COMPLETE
-
 ## Task 6: Make the load balancer automatically reload the new configuration
 
 > 1. Take a screenshots of the HAProxy stat page showing more than 2 web applications running. Additional screenshots are welcome to see a sequence of experimentations like shutting down a node and starting more nodes.
@@ -297,15 +295,12 @@ Tout dans le dossier `logs` à la racine du git.
 
 
 
-> 3. (Optional:) Present a live demo where you add and remove a backend container.
-
-///// TO COMPLETE
-
-
-
 # Difficulties
+
+L'unique difficulté a été lorsque nous avons mélangé nos *logs* (enregistré les *logs* dans le mauvais dossier), de retrouver lesquels appartenaient à quelles tâches.
 
 
 
 # Conclusion
 
+Nous avons découvert le *gossip protocol* utilisé par `Serf` et en avons appris un peu plus sur le fonctionnement de `Docker`. Nous avons découvert une façon de de configurer un répartisseur de charge pour qu'il réagisse dynamiquement au *node* disponible.
