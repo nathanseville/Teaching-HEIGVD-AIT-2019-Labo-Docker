@@ -152,6 +152,8 @@ Non, ce n'est pas dynamique, si l'on ajoute de nouvelle *nodes* il est tout de m
 
 ![HAProxy Stat](img/T0_haproxystat.png)
 
+
+
 > 2. Give the URL of your repository URL in the lab report.
 
 https://github.com/nathanseville/Teaching-HEIGVD-AIT-2019-Labo-Docker
@@ -239,8 +241,6 @@ RUN apt-get update && apt-get -y install xz-utils
 
 
 
-
-
 > 2. Propose a different approach to architecture our images to be able to reuse as much as possible what we have done. Your proposition should also try to avoid as much as possible repetitions between your images.
 
 Une meilleure approche est de chainer les images, une image de base avec `S6` et les instructions commune puis chaque nouvelle image différente demandant quelques instructions supplémentaires basée sur celle possédant les instructions commune à l'aide de la commande `FROM <image>`, ceci permet de limiter la taille des containers et images comme chaque nouvelle image partagera les *layers* de base avec les autre.
@@ -249,9 +249,13 @@ Une meilleure approche est de chainer les images, une image de base avec `S6` et
 
 > 3. Provide the `/tmp/haproxy.cfg` file generated in the `ha` container after each step. Place the output into the `logs` folder like you already did for the Docker logs in the previous tasks. Three files are expected.
 >
-> In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect `. Four files are expected.
+>    In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect `. Four files are expected.
+>
 
 Dans le dossier `logs` à la racine du git.
+
+- `di<name of node>` pour les logs de type `docker inspect`
+- `dps` pour `docker ps`
 
 
 
@@ -271,6 +275,9 @@ On écrase les anciennes données, il serait préférable d'ajouter à la fin de
 
 Dans le dossier `logs` à la racine du git.
 
+- `di<name of node>` pour les logs de type `docker inspect`
+- `dps` pour `docker ps`
+
 
 
 > 2. Provide the list of files from the `/nodes` folder inside the `ha` container. One file expected with the command output.
@@ -281,9 +288,12 @@ Dans le dossier `logs` à la racine du git.
 
 > 3. Provide the configuration file after you stopped one container and the list of nodes present in the `/nodes` folder. One file expected with the command output. Two files are expected.
 >
-> In addition, provide a log file containing the output of the `docker ps` console. One file expected.
+>    In addition, provide a log file containing the output of the `docker ps` console. One file expected.
+>
 
 Dans le dossier `logs` à la racine du git.
+
+- `dpsafters2rm`
 
 
 
@@ -301,7 +311,7 @@ Tout dans le dossier `logs` à la racine du git.
 
 > 2. Give your own feelings about the final solution. Propose improvements or ways to do the things differently. If any, provide references to your readings for the improvements.
 
-Tout dans le dossier `logs` à la racine du git.
+La solution fonctionne bien, les objectifs sont atteints. Il pourrait être intéressant d'utiliser à présent `Serf` pour transmettre plus d'information sur les *nodes* tels que leur état d'utilisation afin d'améliorer la stratégie de *load balancing* en fonction, pour le moment l'installation donne l'impression d'être compliquée pour uniquement savoir quelles *nodes* sont présentes dans l'infrastructure et *up*.
 
 
 
