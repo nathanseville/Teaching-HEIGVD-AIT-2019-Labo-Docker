@@ -178,6 +178,8 @@ Notre *process supervisor* nous permet d'éviter que notre *container* `docker` 
 
 ## Task 2: Add a tool to manage membership in the web server cluster
 
+**Deliverables**
+
 > 1. Provide the docker log output for each of the containers: `ha`, `s1` and `s2`. You need to create a folder `logs` in your repository to store the files separately from the lab report. For each lab task create a folder and name it using the task number. No need to create a folder when there are no logs.
 
 Les logs sont dans le dossier `logs` à la racine du git.
@@ -200,6 +202,8 @@ Une alternative serait de privilégier une méthode de type *pull*, un *manager*
 
 ## Task 3: React to membership changes
 
+**Deliverables**
+
 > 1. Provide the docker log output for each of the containers: `ha`, `s1` and `s2`. Put your logs in the `logs` directory you created in the previous task.
 
 Tout est dans le dossier `logs` à la racine du git.
@@ -213,6 +217,8 @@ Tout est dans le dossier `logs` à la racine du git.
 
 
 ## Task 4: Use a template engine to easily generate configuration files
+
+**Deliverables**
 
 > 1. You probably noticed when we added `xz-utils`, we have to rebuild the whole image which took some time. What can we do to mitigate that? Take a look at the Docker documentation on [image layers](https://docs.docker.com/engine/userguide/storagedriver/imagesandcontainers/#images-and-layers). Tell us about the pros and cons to merge as much as possible of the command.
 
@@ -257,6 +263,8 @@ On écrase les anciennes données, il serait préférable d'ajouter à la fin de
 
 ## Task 5: Generate a new load balancer configuration when membership changes
 
+**Deliverables**
+
 > 1. Provide the file `/usr/local/etc/haproxy/haproxy.cfg` generated in the `ha` container after each step. Three files are expected.
 >
 >    In addition, provide a log file containing the output of the `docker ps` console and another file (per container) with `docker inspect `. Four files are expected.
@@ -280,6 +288,8 @@ Dans le dossier `logs` à la racine du git.
 
 
 ## Task 6: Make the load balancer automatically reload the new configuration
+
+**Deliverables**
 
 > 1. Take a screenshots of the HAProxy stat page showing more than 2 web applications running. Additional screenshots are welcome to see a sequence of experimentations like shutting down a node and starting more nodes.
 >
